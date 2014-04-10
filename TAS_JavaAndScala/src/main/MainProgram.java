@@ -6,12 +6,18 @@ import javav.JProgram;
 import scalav.SProgram;
 
 public class MainProgram {
+	
 	JProgram jProgram = null;
 	SProgram sProgram = null;
 	
-	public MainProgram(int dt){
-		jProgram = new JProgram("src/files/input.txt", dt);
-		sProgram = new SProgram("src/files/input.txt", dt);
+	private static final int MIN_DT = 200;
+	
+	private long dt;
+	
+	public MainProgram(long dt){
+		jProgram = new JProgram("src/files/input.txt", dt,0);
+		sProgram = new SProgram("src/files/input.txt", dt,0);
+		this.dt = dt;
 	}
 	
 	public void printMessage() {
@@ -19,23 +25,81 @@ public class MainProgram {
 	}
 
 	public static void main(final String... arguments) {
-		MainProgram main = new MainProgram(400);
+		
+		if(arguments.length < 1){
+			System.err.println("You should specify the DT!");
+			return;
+		}
+		
+		long dt;
+		try{
+			dt = Long.parseLong(arguments[0]);
+		}catch(NumberFormatException e){
+			System.err.println("DT must be a long number!");
+			return;
+		}
+		
+		if(dt <MIN_DT){
+			System.err.println("DT must b at least " + MIN_DT + "ms");
+			return;
+		}
+		
+		MainProgram main = new MainProgram(dt);
 		main.printMessage();
 		
-		for(int i = 0; i < 1; i++){
+		for(int i = 0; i < 2; i++){
 			main.readLine(i);
+			
 		}
 	}
 	
 	public void readLine(int index) {
 		
 	    synchronized(this) {
-	        jProgram.execute(index);
-	        sProgram.execute(index);
+	        Thread t1 = new Thread(jProgram);
+	        Thread t2 = new Thread(sProgram);
 	        
-			System.out.println("Sleep 800ms\n");
+	        t1.start();
+	        t2.start();
+	        
+	        long startTime = System.currentTimeMillis();
+	        try {
+				t1.join(dt);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+	        long endTime = System.currentTimeMillis();
+	        long elapsedTime = endTime-startTime;
+	        
+	        //TODO Check if dt-elapsedTime is 0
+	        if(dt-elapsedTime <= 0){
+	        	t1.stop();
+	        }
+	        else{
+	        	//TODO get result from t1
+	        }
+	        
+	        try {
+	        	if( dt-elapsedTime > 0)
+	        		t2.join(dt-elapsedTime);
+	        	else if(t2.isAlive()){
+	        		//ERROR
+	        	}
+	        	else{
+	        		//TODO get result from t2
+	        	}
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+	        
+	        long finalTime = System.currentTimeMillis();
+	        long finalElapsedTime = finalTime-startTime;
+	     
 			try {
-				Thread.sleep(800);
+				if(dt-finalElapsedTime > 0){
+					System.out.println("Sleep " + (dt-finalElapsedTime) + "ms\n");
+					Thread.sleep(dt-finalElapsedTime);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
