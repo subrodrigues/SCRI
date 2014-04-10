@@ -4,12 +4,17 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
+
 
 public class JProgram {
 	List<String> lines = null;
+	int dt = 0;
 	
-	public JProgram(String fileName){
+	public JProgram(String fileName, int dt){
+		this.dt = dt;
+		
 		// Get all the lines
 		try {
 			lines = Files.readAllLines(Paths.get(fileName), Charset.forName("UTF-8"));
@@ -28,4 +33,5 @@ public class JProgram {
 //			e.printStackTrace();
 //		}
 	}
+	
 }

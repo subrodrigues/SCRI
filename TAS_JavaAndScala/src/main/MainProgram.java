@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Date;
+
 import javav.JProgram;
 import scalav.SProgram;
 
@@ -7,9 +9,9 @@ public class MainProgram {
 	JProgram jProgram = null;
 	SProgram sProgram = null;
 	
-	public MainProgram(){
-		jProgram = new JProgram("src/files/input.txt");
-		sProgram = new SProgram("src/files/input.txt");
+	public MainProgram(int dt){
+		jProgram = new JProgram("src/files/input.txt", dt);
+		sProgram = new SProgram("src/files/input.txt", dt);
 	}
 	
 	public void printMessage() {
@@ -17,15 +19,16 @@ public class MainProgram {
 	}
 
 	public static void main(final String... arguments) {
-		MainProgram main = new MainProgram();
+		MainProgram main = new MainProgram(400);
 		main.printMessage();
 		
-		for(int i = 0; i < 4; i++){
+		for(int i = 0; i < 1; i++){
 			main.readLine(i);
 		}
 	}
 	
 	public void readLine(int index) {
+		
 	    synchronized(this) {
 	        jProgram.execute(index);
 	        sProgram.execute(index);
@@ -38,4 +41,5 @@ public class MainProgram {
 			}
 	    }
 	}
+	
 }
