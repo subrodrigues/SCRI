@@ -6,17 +6,17 @@ import javav.JProgram;
 import scalav.SProgram;
 
 public class MainProgram {
-	
 	JProgram jProgram = null;
 	SProgram sProgram = null;
+	private int index = 0;
 	
 	private static final int MIN_DT = 200;
 	
 	private long dt;
 	
 	public MainProgram(long dt){
-		jProgram = new JProgram("src/files/input.txt", dt,0);
-		sProgram = new SProgram("src/files/input.txt", dt,0);
+		jProgram = new JProgram("src/files/input.txt", dt, index);
+		sProgram = new SProgram("src/files/input.txt", dt, index);
 		this.dt = dt;
 	}
 	
@@ -47,7 +47,7 @@ public class MainProgram {
 		MainProgram main = new MainProgram(dt);
 		main.printMessage();
 		
-		for(int i = 0; i < 2; i++){
+		for(int i = 0; i < 10; i++){
 			main.readLine(i);
 			
 		}

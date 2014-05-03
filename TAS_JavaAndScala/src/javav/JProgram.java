@@ -32,13 +32,15 @@ public class JProgram implements Runnable {
 	
 	@Override
 	public void run() {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(lines.get(index) + " from Java");
+//		try {
+//			Thread.sleep(500);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		for( int i = 0; i < 10; i++)
+			System.out.println(lines.get(index) + " from Java");
 
 		// try {
 		// System.out.println("Sleep 800ms\n");
@@ -46,6 +48,8 @@ public class JProgram implements Runnable {
 		// } catch (InterruptedException e) {
 		// e.printStackTrace();
 		// }
+		
+		index++;
 	}
 
 }
