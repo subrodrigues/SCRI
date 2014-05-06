@@ -8,7 +8,7 @@ import scala.reflect.internal.util.Collections
 class SProgram(fileName: String, dT : Long, ind: Int) extends Runnable {	
 	val readings = fillReadings(fileName)
 			var stuckAtReading = new StuckAtReading()
-	var result : Double = 0
+	var result : Double = -1.0d
 	var index : Int = ind
 
 	var sensorLives = Array.ofDim[Int](3) // When sensor life = 0, it "dies"
@@ -45,8 +45,70 @@ class SProgram(fileName: String, dT : Long, ind: Int) extends Runnable {
 		
 		// Actualiza os Sensores
 		updateSensors(failure)
+		
+		var sensorTAS = Array.ofDim[Double](3) // When sensor life = 0, it "dies"
+		sensorTAS(0) = calculateTAS(0) // Calcular o TAS do sensor 1
+		sensorTAS(1) = calculateTAS(1) // Calcular o TAS do sensor 2
+		sensorTAS(2) = calculateTAS(2) // Calcular o TAS do sensor 3
+		
+		
+		result = averageTAS(sensorTAS)
+		
+		println("\nAverage TAS: " + result)
 
 		index += 1
+	}
+
+		
+	def averageTAS(sensorTAS : Array[Double]): Double ={
+		var averageTemp : Double = 0.0d
+		var numSensors : Double = 0.0d
+		
+		for(i <- 0 until 3){
+			if(sensorTAS(i) != -1.0d){
+				averageTemp += sensorTAS(i)
+				numSensors += 1.0d
+			}
+		}
+
+		if(numSensors > 0.0d){
+			averageTemp / numSensors
+		}
+		else{
+		  -1.0d
+		}
+	}
+	
+	def calculateTAS(sensorNum : Int): Double ={
+		var m : Double = getMachNumber(sensorNum);
+		var t : Double = -1.0d
+		
+		println("MACH: " + m)
+		
+		if(m != -1.0d){
+		    t = getOAT(sensorNum, m)
+		}
+		println("OAT: " + t)
+		
+		// TAS
+		if(m != -1.0d && t != -1.0d)
+		  Variables.SOUND_VEL_AT_SEA_LEVEL * m * Math.sqrt(t / Variables.AIR_TEMP_AT_SEA_LEVEL)
+		else 
+		  -1.0d
+	}
+	
+	def getOAT(sensorNum : Int, m : Double): Double ={
+		if(readings(index).pt(sensorNum) != -1.0d)
+			readings(index).pt(sensorNum)/(1.0d + 0.2d * Math.pow(m, 2))
+		else
+			-1.0d
+	}
+	
+	def getMachNumber(sensorNum : Int): Double ={
+		if(readings(index).pd(sensorNum) != -1.0d && readings(index).pe(sensorNum) != -1.0d)
+			Math.sqrt(5.0d * (Math.pow(((readings(index).pd(sensorNum) / readings(index).pe(sensorNum)) + 1.0d), (2.0d/7.0d)) - 1.0d))
+		else
+			-1.0d
 	}
 
 	def fillReadings(fileName : String): Array[Reading] = {
@@ -327,7 +389,7 @@ class SProgram(fileName: String, dT : Long, ind: Int) extends Runnable {
   private def updateSensors(failure: Array[Boolean]): Unit = {
 	  if(sensorLives(0) > 0){
 	    
-	    if(ignoringSensor(0) && sensor1IgnoredIterations < 5){ // Incrementa 
+	    if(ignoringSensor(0) && sensor1IgnoredIterations < 5){ // Incrementa se estiver a ignorar sensor
 	  		sensor1IgnoredIterations += 1
 	  		println("Sensor 1 ignored: " + sensor1IgnoredIterations)
 	  		
@@ -337,19 +399,19 @@ class SProgram(fileName: String, dT : Long, ind: Int) extends Runnable {
 		  	}
 	  	}
 	    
-	  	if(failure(0) && !ignoringSensor(0) && sensor1IgnoredIterations == 0){ // Primeira falha
+	  	if(failure(0) && !ignoringSensor(0) && sensor1IgnoredIterations == 0){ // Primeira falha do sensor
 	  		println("Failure in Sensor 1!")
 	  		ignoringSensor(0) = true
 	  	}
-	  	else if(failure(0) && !ignoringSensor(0) && sensor1IgnoredIterations == 5){ // Caso ocorra segunda Falha
+	  	else if(failure(0) && !ignoringSensor(0) && sensor1IgnoredIterations == 5){ // Caso ocorra segunda Falha do sensor
 	  		println("Second failure in Sensor 1. Sensor 1 DISABLED!")
-	  		sensorLives(0) -= 1 // Ignorar permanentemente
+	  		sensorLives(0) -= 1 // Ignorar permanentemente o sensor
 	  	}
 	  }
 	  
 	  if(sensorLives(1) > 0){
 	    
-	    if(ignoringSensor(1) && sensor2IgnoredIterations < 5){ // Incrementa 
+	    if(ignoringSensor(1) && sensor2IgnoredIterations < 5){ // Incrementa se estiver a ignorar sensor
 	  		sensor2IgnoredIterations += 1
 	  		println("Sensor 2 ignored: " + sensor2IgnoredIterations)
 	  		
@@ -359,33 +421,33 @@ class SProgram(fileName: String, dT : Long, ind: Int) extends Runnable {
 		  	}
 	  	}
 	    	    
-	  	if(failure(1) && !ignoringSensor(1) && sensor2IgnoredIterations == 0){ // Primeira falha
+	  	if(failure(1) && !ignoringSensor(1) && sensor2IgnoredIterations == 0){ // Primeira falha do sensor
 	  		println("Failure in Sensor 2!")
 	  		ignoringSensor(1) = true
 	  	}
-	  	else if(failure(1) && !ignoringSensor(1) && sensor2IgnoredIterations == 5){ // Caso ocorra segunda Falha
+	  	else if(failure(1) && !ignoringSensor(1) && sensor2IgnoredIterations == 5){ // Caso ocorra segunda Falha do sensor
 	  		  println("Second failure in Sensor 2. Sensor 2 DISABLED!")
-	  		  sensorLives(1) -= 1 // Ignorar permanentemente
+	  		  sensorLives(1) -= 1 // Ignorar permanentemente o sensor
 	  	}
 	  }
 	  if(sensorLives(2) > 0){
-	    if(ignoringSensor(2) && sensor3IgnoredIterations < 5){ // Incrementa 
+	    if(ignoringSensor(2) && sensor3IgnoredIterations < 5){ // Incrementa se estiver a ignorar sensor
 	  		sensor3IgnoredIterations += 1
 	  		println("Sensor 3 ignored: " + sensor3IgnoredIterations)
 	  		
-	  		if(sensor3IgnoredIterations == 5){ // Ignorou 5 vezes, activa sensor
+	  		if(sensor3IgnoredIterations == 5){ // Ignorou 5 vezes, activa sensor sensor
 		  		ignoringSensor(2) = false
 		  		println("Sensor 3 is enabled again!")
 		  	}
 	  	}
 	    	    
-	  	if(failure(2) && !ignoringSensor(2) && sensor3IgnoredIterations == 0){ // Primeira falha
+	  	if(failure(2) && !ignoringSensor(2) && sensor3IgnoredIterations == 0){ // Primeira falha do sensor
 	  		println("Failure in Sensor 3!")
 	  		ignoringSensor(2) = true
 	  	}
-	  	else if(failure(2) && !ignoringSensor(2) && sensor3IgnoredIterations == 5){ // Caso ocorra segunda Falha
+	  	else if(failure(2) && !ignoringSensor(2) && sensor3IgnoredIterations == 5){ // Caso ocorra segunda Falha do sensor
 	  		 println("Second failure in Sensor 3. Sensor 3 DISABLED!")
-	  		 sensorLives(2) -= 1 // Ignorar permanentemente
+	  		 sensorLives(2) -= 1 // Ignorar permanentemente o sensor
 	  	}
 	  }
 	}
