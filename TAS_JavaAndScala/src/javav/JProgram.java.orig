@@ -72,6 +72,7 @@ public class JProgram implements Runnable {
 
 	@Override
 	public void run() {
+<<<<<<< HEAD
 		try {
 			Line line = readLine();
 			result = input.read(line.s1.pe, line.s1.pd, line.s1.t,
@@ -116,8 +117,6 @@ public class JProgram implements Runnable {
 			
 			return ret;
 		}
-		
-		index++;
 	}
 
 	private class Line {
@@ -139,6 +138,26 @@ public class JProgram implements Runnable {
 			ret+=s3.toString();
 			return ret;
 		}
+=======
+//		try {
+//			Thread.sleep(500);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		for( int i = 0; i < 10; i++)
+			System.out.println(lines.get(index) + " from Java");
+
+		// try {
+		// System.out.println("Sleep 800ms\n");
+		// Thread.sleep(500);
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		
+		index++;
+>>>>>>> 57eb99393c819b36d27484877431415c5e5e2c94
 	}
 
 }
