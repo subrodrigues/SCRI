@@ -17,9 +17,6 @@ package javav;
 // ***** VDMTOOLS START Name=package KEEP=NO
 // ***** VDMTOOLS END Name=package
 
-// ***** VDMTOOLS START Name=imports KEEP=NO
-import jp.vdmtools.VDM.UTIL;
-import jp.vdmtools.VDM.Sentinel;
 import jp.vdmtools.VDM.EvaluatePP;
 import jp.vdmtools.VDM.CGException;
 // ***** VDMTOOLS END Name=imports

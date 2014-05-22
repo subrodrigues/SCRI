@@ -334,8 +334,10 @@ public class Sensor implements EvaluatePP {
         var1_2 = Boolean.valueOf(pd.doubleValue() < PRESSURE_LOW.intValue());
       if (!(cond_1 = var1_2).booleanValue()) 
         cond_1 = Boolean.valueOf(pd.doubleValue() > PRESSURE_MAX.intValue());
-      if (cond_1.booleanValue()) 
+      if (cond_1.booleanValue()) {
+    	  System.err.println("Invalid prressure!");
         return failed();
+      }
       Boolean cond_17 = null;
       if (!(cond_17 = Boolean.valueOf(t.doubleValue() < TEMPERATURE_LOW.intValue())).booleanValue()) 
         cond_17 = Boolean.valueOf(t.doubleValue() > TEMPERATURE_MAX.intValue());
@@ -350,23 +352,31 @@ public class Sensor implements EvaluatePP {
         var1_26 = Boolean.valueOf(tHistory.size() > 1);
       if ((cond_25 = var1_26).booleanValue()) 
         cond_25 = Boolean.valueOf(!checkVariance().booleanValue());
-      if (cond_25.booleanValue()) 
+      if (cond_25.booleanValue()) {
+    	  System.err.println("Invalid variance!");
         return Boolean.FALSE;
+      }
       Boolean cond_43 = null;
       if ((cond_43 = Boolean.valueOf(peHistory.size() >= STUCK_AT.intValue())).booleanValue()) 
         cond_43 = allEqual(lastN(peHistory, STUCK_AT));
-      if (cond_43.booleanValue()) 
+      if (cond_43.booleanValue()) {
+    	  System.err.println("Stuck at pe!");
         return failed();
+      }
       Boolean cond_53 = null;
       if ((cond_53 = Boolean.valueOf(pdHistory.size() >= STUCK_AT.intValue())).booleanValue()) 
         cond_53 = allEqual(lastN(pdHistory, STUCK_AT));
-      if (cond_53.booleanValue()) 
+      if (cond_53.booleanValue()) {
+    	  System.err.println("Stuck at pd!");
         return failed();
+      }
       Boolean cond_63 = null;
       if ((cond_63 = Boolean.valueOf(tHistory.size() >= STUCK_AT.intValue())).booleanValue()) 
         cond_63 = allEqual(lastN(tHistory, STUCK_AT));
-      if (cond_63.booleanValue()) 
+      if (cond_63.booleanValue()) {
+    	  System.err.println("Stuck at t!");
         return failed();
+      }
       history = new ArrayList(history.subList(1, history.size()));
       if (!this.inv_Sensor().booleanValue()) 
         UTIL.RunTime("Instance invariant failure in Sensor");
@@ -396,23 +406,25 @@ public class Sensor implements EvaluatePP {
 
 // ***** VDMTOOLS START Name=checkVariance KEEP=NO
   private Boolean checkVariance () throws CGException {
-    sentinel.entering(((SensorSentinel)sentinel).checkVariance);
-    try {
-      if (!this.pre_checkVariance().booleanValue()) 
-        UTIL.RunTime("Precondition failure in checkVariance");
-      Boolean cond_1 = null;
-      if (!(cond_1 = Boolean.valueOf(Math.abs((UTIL.NumberToReal(new ArrayList(peHistory.subList(1, peHistory.size())).get(0)).doubleValue() - pe.doubleValue())) >= PRESSURE_VARIANCE.intValue())).booleanValue()) 
-        cond_1 = Boolean.valueOf(Math.abs((UTIL.NumberToReal(new ArrayList(pdHistory.subList(1, pdHistory.size())).get(0)).doubleValue() - pd.doubleValue())) >= PRESSURE_VARIANCE.intValue());
-      if (cond_1.booleanValue()) 
-        return failed();
-      if (Math.abs((UTIL.NumberToReal(new ArrayList(tHistory.subList(1, tHistory.size())).get(0)).doubleValue() - t.doubleValue())) >= TEMPERATURE_VARIANCE.intValue()) 
-        return failed();
-      return Boolean.TRUE;
-    }
-    finally {
-      sentinel.leaving(((SensorSentinel)sentinel).checkVariance);
-    }
-  }
+	    sentinel.entering(((SensorSentinel)sentinel).checkVariance);
+	    try {
+	      if (!this.pre_checkVariance().booleanValue()) 
+	        UTIL.RunTime("Precondition failure in checkVariance");
+	      if (!UTIL.equals(new ArrayList(history.subList(1, history.size())).get(0), new quotes.OK())) 
+	        return Boolean.TRUE;
+	      Boolean cond_7 = null;
+	      if (!(cond_7 = Boolean.valueOf(Math.abs((UTIL.NumberToReal(new ArrayList(peHistory.subList(1, peHistory.size())).get(0)).doubleValue() - pe.doubleValue())) >= PRESSURE_VARIANCE.intValue())).booleanValue()) 
+	        cond_7 = Boolean.valueOf(Math.abs((UTIL.NumberToReal(new ArrayList(pdHistory.subList(1, pdHistory.size())).get(0)).doubleValue() - pd.doubleValue())) >= PRESSURE_VARIANCE.intValue());
+	      if (cond_7.booleanValue()) 
+	        return failed();
+	      if (Math.abs((UTIL.NumberToReal(new ArrayList(tHistory.subList(1, tHistory.size())).get(0)).doubleValue() - t.doubleValue())) >= TEMPERATURE_VARIANCE.intValue()) 
+	        return failed();
+	      return Boolean.TRUE;
+	    }
+	    finally {
+	      sentinel.leaving(((SensorSentinel)sentinel).checkVariance);
+	    }
+	  }
 // ***** VDMTOOLS END Name=checkVariance
 
 

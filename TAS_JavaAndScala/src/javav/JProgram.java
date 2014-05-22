@@ -116,8 +116,6 @@ public class JProgram implements Runnable {
 			
 			return ret;
 		}
-		
-		index++;
 	}
 
 	private class Line {
