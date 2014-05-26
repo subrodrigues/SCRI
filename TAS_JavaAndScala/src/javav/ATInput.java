@@ -29,6 +29,8 @@ import jp.vdmtools.VDM.CGException;
 
 
 public class ATInput implements EvaluatePP {
+	
+	private boolean debug = false;
 
 // ***** VDMTOOLS START Name=s1 KEEP=NO
   public volatile Sensor s1 = null;
@@ -155,8 +157,9 @@ public class ATInput implements EvaluatePP {
 
 
 // ***** VDMTOOLS START Name=ATInput KEEP=NO
-  public ATInput () throws CGException {
+  public ATInput (boolean debug) throws CGException {
     try {
+    	this.debug = debug;
       vdm_init_ATInput();
       lastFailedS1 = new Integer(TRANSIENT_IGNORE.intValue() * -1);
       lastFailedS2 = new Integer(TRANSIENT_IGNORE.intValue() * -1);
@@ -229,7 +232,9 @@ public class ATInput implements EvaluatePP {
       if ((cond_88 = s1Add).booleanValue()) 
         cond_88 = validateMean(s1, s2Add, s3Add, s2, s3);
       if (cond_88.booleanValue()) {
-    	  System.out.println("Sensor 1 active!");
+    	  if(debug){
+    		  System.out.println("Sensor 1 active!");
+    	  }
         voterVals.add(dra1.getResult(pe1, pd1, t1));
       }
       else {
@@ -239,7 +244,8 @@ public class ATInput implements EvaluatePP {
         if (cond_96.booleanValue()) {
           lastFailedS1 = UTIL.NumberToInt(UTIL.clone(round));
           s1Validity = Boolean.FALSE;
-          System.err.println("Sensor 1 failed!");
+          if(debug)
+        	  System.err.println("Sensor 1 failed!");
           s1.afterFail();
         }
       }
@@ -247,7 +253,8 @@ public class ATInput implements EvaluatePP {
       if ((cond_112 = s2Add).booleanValue()) 
         cond_112 = validateMean(s2, s1Add, s3Add, s1, s3);
       if (cond_112.booleanValue()) {
-    	  System.out.println("Sensor 2 active!");
+    	  if(debug)
+    		  System.out.println("Sensor 2 active!");
         voterVals.add(dra2.getResult(pe2, pd2, t2));
       }
       else {
@@ -257,7 +264,8 @@ public class ATInput implements EvaluatePP {
         if (cond_120.booleanValue()) {
           lastFailedS2 = UTIL.NumberToInt(UTIL.clone(round));
           s2Validity = Boolean.FALSE;
-          System.err.println("Sensor 2 failed!");
+          if(debug)
+        	  System.err.println("Sensor 2 failed!");
           s2.afterFail();
         }
       }
@@ -265,7 +273,8 @@ public class ATInput implements EvaluatePP {
       if ((cond_136 = s3Add).booleanValue()) 
         cond_136 = validateMean(s3, s2Add, s1Add, s2, s1);
       if (cond_136.booleanValue()) {
-    	  System.out.println("Sensor 3 active!");
+    	  if(debug)
+    		  System.out.println("Sensor 3 active!");
         voterVals.add(dra3.getResult(pe3, pd3, t3));
       }
       else {
@@ -275,7 +284,8 @@ public class ATInput implements EvaluatePP {
         if (cond_144.booleanValue()) {
           lastFailedS3 = UTIL.NumberToInt(UTIL.clone(round));
           s3Validity = Boolean.FALSE;
-          System.err.println("Sensor 3 failed!");
+          if(debug)
+        	  System.err.println("Sensor 3 failed!");
           s3.afterFail();
         }
       }

@@ -102,7 +102,6 @@ public class Voter implements EvaluatePP {
     sentinel.entering(((VoterSentinel)sentinel).vote);
     try {
       if (vals.size() == 0) {
-    	  System.out.println("No vals!");
         return ERROR;
       }
       else 

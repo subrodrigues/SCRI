@@ -32,6 +32,7 @@ import jp.vdmtools.VDM.CGException;
 
 public class Sensor implements EvaluatePP {
 
+	private boolean debug = false;
 // ***** VDMTOOLS START Name=pe KEEP=NO
   public volatile Number pe = null;
 // ***** VDMTOOLS END Name=pe
@@ -335,7 +336,7 @@ public class Sensor implements EvaluatePP {
       if (!(cond_1 = var1_2).booleanValue()) 
         cond_1 = Boolean.valueOf(pd.doubleValue() > PRESSURE_MAX.intValue());
       if (cond_1.booleanValue()) {
-    	  System.err.println("Invalid prressure!");
+    //	  System.err.println("Invalid pressure!");
         return failed();
       }
       Boolean cond_17 = null;
@@ -353,28 +354,28 @@ public class Sensor implements EvaluatePP {
       if ((cond_25 = var1_26).booleanValue()) 
         cond_25 = Boolean.valueOf(!checkVariance().booleanValue());
       if (cond_25.booleanValue()) {
-    	  System.err.println("Invalid variance!");
+    	//  System.err.println("Invalid variance!");
         return Boolean.FALSE;
       }
       Boolean cond_43 = null;
       if ((cond_43 = Boolean.valueOf(peHistory.size() >= STUCK_AT.intValue())).booleanValue()) 
         cond_43 = allEqual(lastN(peHistory, STUCK_AT));
       if (cond_43.booleanValue()) {
-    	  System.err.println("Stuck at pe!");
+    	//  System.err.println("Stuck at pe!");
         return failed();
       }
       Boolean cond_53 = null;
       if ((cond_53 = Boolean.valueOf(pdHistory.size() >= STUCK_AT.intValue())).booleanValue()) 
         cond_53 = allEqual(lastN(pdHistory, STUCK_AT));
       if (cond_53.booleanValue()) {
-    	  System.err.println("Stuck at pd!");
+    //	  System.err.println("Stuck at pd!");
         return failed();
       }
       Boolean cond_63 = null;
       if ((cond_63 = Boolean.valueOf(tHistory.size() >= STUCK_AT.intValue())).booleanValue()) 
         cond_63 = allEqual(lastN(tHistory, STUCK_AT));
       if (cond_63.booleanValue()) {
-    	  System.err.println("Stuck at t!");
+    //	  System.err.println("Stuck at t!");
         return failed();
       }
       history = new ArrayList(history.subList(1, history.size()));

@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Rsrc-Class-Path: ./ javaapi.jar ToolboxAPI.jar VDM.jar
+Class-Path: ScalaLib/scala-library.jar ScalaLib/scala-swing.jar
+Rsrc-Main-Class: main.MainProgram
+Main-Class: org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader
+

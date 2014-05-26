@@ -17,12 +17,13 @@ public class JProgram implements Runnable {
 	private int index;
 	private double result;
 	private ATInput input;
+	private boolean debug = false;
 
 	public JProgram(String fileName, long dt, int index) {
 		this.dt = dt;
 		this.index = index;
 		try {
-			this.input = new ATInput();
+			this.input = new ATInput(debug);
 		} catch (CGException e1) {
 			e1.printStackTrace();
 		}
@@ -77,7 +78,7 @@ public class JProgram implements Runnable {
 			result = input.read(line.s1.pe, line.s1.pd, line.s1.t,
 					line.s2.pe, line.s2.pd, line.s2.t, line.s3.pe, line.s3.pd,
 					line.s3.t).doubleValue();
-			System.out.println(line.toString());
+
 			index++;
 		} catch (CGException e) {
 			e.printStackTrace();
@@ -137,6 +138,10 @@ public class JProgram implements Runnable {
 			ret+=s3.toString();
 			return ret;
 		}
+	}
+
+	public void setDebug(boolean d) {
+		this.debug = d;
 	}
 
 }
